@@ -209,7 +209,6 @@ conn.close()
 
 
 from werkzeug.utils import secure_filename
-import pyttsx3
 import os
 import sqlite3
 from flask import request, session, redirect, url_for
