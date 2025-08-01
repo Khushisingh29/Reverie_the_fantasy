@@ -1,20 +1,22 @@
+import os
 import sqlite3
 
-username = "Khushi_Singh_four"
-password = "MKA142930"
+username = os.getenv("ADMIN_USERNAME")
+password = os.getenv("ADMIN_PASSWORD")
 is_admin = 1
+
+if not username or not password:
+    raise ValueError("❌ ADMIN_USERNAME and ADMIN_PASSWORD must be set as environment variables.")
 
 with sqlite3.connect("stories.db") as conn:
     cur = conn.cursor()
 
-    # Check if the username already exists
     cur.execute("SELECT * FROM users WHERE username=?", (username,))
     existing_user = cur.fetchone()
 
     if existing_user:
         print(f"❌ Username '{username}' already exists. Choose a different one.")
     else:
-        # Insert only if username is not taken
         cur.execute('''
             INSERT INTO users (username, password, is_admin)
             VALUES (?, ?, ?)

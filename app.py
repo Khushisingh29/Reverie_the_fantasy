@@ -293,6 +293,33 @@ def submit_story():
     return redirect(url_for('home'))
 
 
+from flask import Flask, render_template, request, redirect, session, url_for, flash
+from werkzeug.security import check_password_hash
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        with sqlite3.connect('stories.db') as conn:
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM users WHERE username = ?", (username,))
+            user = cur.fetchone()
+
+            if user and check_password_hash(user['password'], password):
+                session['user_id'] = user['id']
+                session['username'] = user['username']
+                session['is_admin'] = bool(user['is_admin'])
+                flash('Login successful!')
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid username or password', 'error')
+                return redirect(url_for('login'))
+
+    return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
