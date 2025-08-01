@@ -220,8 +220,10 @@ UPLOAD_FOLDER = os.path.join('static', 'covers')
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+import os
 import asyncio
 import edge_tts
+import sqlite3
 
 @app.route('/submit', methods=['POST'])
 def submit_story():
@@ -271,7 +273,7 @@ def submit_story():
         ''', (story_id, chapter_title, chapter_content))
         chapter_id = cur.lastrowid
 
-        # ✅ Generate audio using edge-tts (male voice)
+        # ✅ Generate audio using edge-tts
         try:
             audio_folder = os.path.join('static', 'audios')
             os.makedirs(audio_folder, exist_ok=True)
@@ -286,6 +288,7 @@ def submit_story():
         except Exception as e:
             print("Error generating audio:", e)
 
+        # ✅ Commit changes after all database + audio logic
         conn.commit()
 
     return redirect(url_for('home'))
