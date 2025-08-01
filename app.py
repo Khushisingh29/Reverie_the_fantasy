@@ -2,11 +2,13 @@ import sqlite3
 from flask import g
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'MKA'
+app.secret_key = os.environ.get('SECRET_KEY', 'devfallbacksecret')
 
 conn = sqlite3.connect('stories.db', check_same_thread=False)  # Replace with your DB name
 conn.row_factory = sqlite3.Row  # ✅ ADD THIS LINE HERE
@@ -218,6 +220,9 @@ UPLOAD_FOLDER = os.path.join('static', 'covers')
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+import asyncio
+import edge_tts
+
 @app.route('/submit', methods=['POST'])
 def submit_story():
     if 'username' not in session:
@@ -266,32 +271,20 @@ def submit_story():
         ''', (story_id, chapter_title, chapter_content))
         chapter_id = cur.lastrowid
 
-        # ✅ Generate audio for chapter content
-        # ✅ Generate audio for chapter content
-        # ✅ Generate audio for chapter content using David's voice
+        # ✅ Generate audio using edge-tts (male voice)
         try:
-           import pyttsx3
+            audio_folder = os.path.join('static', 'audios')
+            os.makedirs(audio_folder, exist_ok=True)
+            audio_path = os.path.join(audio_folder, f'chapter_{chapter_id}.mp3')
 
-           engine = pyttsx3.init()
-           voices = engine.getProperty('voices')
+            async def generate_audio():
+                communicate = edge_tts.Communicate(chapter_content, voice="en-US-GuyNeural")
+                await communicate.save(audio_path)
 
-           # Explicitly select David
-           for voice in voices:
-              if "David" in voice.name:
-                  engine.setProperty('voice', voice.id)
-                  break
-           print("Using voice:", engine.getProperty('voice'))
-           audio_folder = os.path.join('static', 'audios')
-           os.makedirs(audio_folder, exist_ok=True)
-
-           audio_path = os.path.join(audio_folder, f'chapter_{chapter_id}.mp3')
-           engine.save_to_file(chapter_content, audio_path)
-           engine.runAndWait()
+            asyncio.run(generate_audio())
 
         except Exception as e:
             print("Error generating audio:", e)
-
-
 
         conn.commit()
 
@@ -639,29 +632,33 @@ def admin_panel():
 
     return render_template('admin.html', users=users, stories=stories)
 
-import sqlite3
-
-with sqlite3.connect("stories.db") as conn:
-    cur = conn.cursor()
-    try:
-        cur.execute('''
-            INSERT INTO users (username, email, password, is_admin)
-            VALUES (?, ?, ?, ?)
-        ''', ('Khushi_Singh_four', 'itskhushi.singh4545@gmail.com', 'MKA142930', 1))
-        conn.commit()
-        print("✅ Admin user created successfully.")
-    except sqlite3.IntegrityError as e:
-        print("❌ Error:", e)
-
+import os
+from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash
 import sqlite3
 
-hashed_password = generate_password_hash("MKA142930")  # This will produce scrypt hash
+load_dotenv()  # ✅ this loads .env values
 
-with sqlite3.connect("stories.db") as conn:
-    cur = conn.cursor()
-    cur.execute("UPDATE users SET password = ? WHERE username = ?", (hashed_password, "KhushiSingh"))
-    conn.commit()
+admin_username = os.getenv("ADMIN_USERNAME")
+admin_email = os.getenv("ADMIN_EMAIL")
+admin_password = os.getenv("ADMIN_PASSWORD")
+
+if not admin_username or not admin_email or not admin_password:
+    print("❌ Missing admin credentials in .env")
+else:
+    hashed_password = generate_password_hash(admin_password)
+
+    with sqlite3.connect("stories.db") as conn:
+        cur = conn.cursor()
+        try:
+            cur.execute('''
+                INSERT INTO users (username, email, password, is_admin)
+                VALUES (?, ?, ?, ?)
+            ''', (admin_username, admin_email, hashed_password, 1))
+            conn.commit()
+            print("✅ Admin user created securely.")
+        except sqlite3.IntegrityError as e:
+            print("❌ Error:", e)
 
 
 
@@ -680,14 +677,14 @@ import sqlite3
 with sqlite3.connect("stories.db") as conn:
     cur = conn.cursor()
     
-    # Delete all admin users except 'Khushi_Singh_four'
+    
     cur.execute('''
         DELETE FROM users
         WHERE is_admin = 1 AND username != 'Khushi_Singh_four'
     ''')
 
     conn.commit()
-    print("✅ All other admin users deleted. Only 'Khushi_Singh_four' remains.")
+   
 
 
 import sqlite3
