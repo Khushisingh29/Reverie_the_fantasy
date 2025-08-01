@@ -1,0 +1,21 @@
+<!-- templates/upload_chapter.html -->
+<h2>Chapters</h2>
+<ul>
+    {% if parts %}
+        {% for part in parts %}
+            <li>
+                <a href="{{ url_for('read_story', story_id=story['id'], part=part['part']) }}">
+                    {{ part['title'] }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+
+    {% if current_user and current_user['id'] == story['author_id'] %}
+        <li>
+            <a href="{{ url_for('add_chapter', story_id=story['id']) }}" style="color:#1e90ff; font-weight:bold; text-decoration:none;">
+                (+ Add Chapter)
+            </a>
+        </li>
+    {% endif %}
+</ul>

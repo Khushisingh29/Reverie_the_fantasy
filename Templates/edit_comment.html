@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Comment</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+</head>
+<body>
+    <h2>Edit Your Comment</h2>
+    <form method="POST">
+        <textarea name="comment" rows="4" cols="50" required>{{ comment.comment }}</textarea><br>
+        <button type="submit">Save Changes</button>
+        <a href="{{ url_for('read_chapter', chapter_id=comment.chapter_id) }}">Cancel</a>
+    </form>
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+</body>
+</html>

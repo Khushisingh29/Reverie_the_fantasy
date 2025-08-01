@@ -1,0 +1,30 @@
+<html>
+<head>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+</head>
+<body>
+<h2>📖 My Reading History</h2>
+
+{% if history %}
+    <ul>
+        {% for story in history %}
+            <li>
+                <img src="{{ url_for('static', filename='covers/' + (story['cover_image'] or 'default.jpg')) }}" width="80">
+                <strong>{{ story['title'] }}</strong>
+                <a href="{{ url_for('story_detail', story_id=story['id']) }}">Read Again</a>
+
+                <form action="{{ url_for('remove_from_history', story_id=story['id']) }}" method="POST" style="display:inline;">
+                    <button type="submit">❌ Remove</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven't read any stories yet.</p>
+{% endif %}
+
+
+</body>
+</html>

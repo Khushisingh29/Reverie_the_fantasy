@@ -1,0 +1,40 @@
+/* static/light.css */
+
+body {
+    background-color: #f4f4f4;
+    color: #1e1e1e;
+    font-family: sans-serif;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+button {
+    background-color: #ffffff;
+    color: #000;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input, textarea, select {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+nav, header, footer {
+    background-color: #ffffff;
+    color: #000;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.chapter-text, .comments-section {
+    background-color: #fff;
+    border: 1px solid #ccc

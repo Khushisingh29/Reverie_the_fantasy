@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ story['title'] }} - Part {{ part }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        .chapter {
+            margin-bottom: 30px;
+        }
+        .comments {
+            margin-top: 40px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ story['title'] }}</h1>
+    <h2>Part {{ part }}: {{ chapter['title'] }}</h2>
+
+    <div class="chapter">
+        <p>{{ chapter['content'] }}</p>
+    </div>
+
+    <hr>
+
+    <div class="comments">
+        <h3>Comments</h3>
+        <ul>
+            {% for comment in comments %}
+                <li><strong>{{ comment['username'] }}:</strong> {{ comment['text'] }}</li>
+            {% else %}
+                <li>No comments yet.</li>
+            {% endfor %}
+        </ul>
+
+        <form method="POST" action="{{ url_for('add_comment', story_id=story['id'], part=part) }}">
+            <label for="comment">Add a Comment:</label><br>
+            <textarea name="text" required></textarea><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!-- templates/search_results.html -->
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Search Results</title>
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+</head>
+<body>
+    <h1>Search Results for "{{ query }}"</h1>
+
+    {% if results %}
+        <ul>
+            {% for story in results %}
+                <li>
+                    <a href="{{ url_for('story_detail', story_id=story.id) }}">{{ story.title }}</a>
+                    - {{ story.description }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No matching stories found.</p>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}">← Back to Home</a>
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+</body>
+</html>

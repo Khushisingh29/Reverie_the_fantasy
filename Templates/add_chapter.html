@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Chapter</title>
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+    
+</head>
+<body>
+    <h1>Add Chapter to "{{ story_title }}"</h1><br><br>
+
+    <form method="POST">
+        <label for="title">Chapter Title</label><br><br>
+
+        <input type="text" name="title" id="title" required><br><br>
+
+
+        <label for="content">Chapter Content</label><br><br>
+
+        <textarea name="content" id="content" rows="10" required></textarea><br><br>
+
+
+        <button type="submit">Upload Chapter</button><br><br>
+
+    </form>
+
+    <a href="{{ url_for('story_detail', story_id=story_id) }}">← Back to Story</a><br><br>
+
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+</body>
+</html>

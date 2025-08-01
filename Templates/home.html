@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+</head>
+<body>
+
+<!-- Top-Centered Search Bar -->
+<div style="width: 100%; display: flex; justify-content: center; margin-top: 20px;">
+    <form action="{{ url_for('search') }}" method="GET" style="display: flex;">
+        <input type="text" name="q" placeholder="Search stories..." 
+               style="padding: 8px 15px; width: 300px; border-radius: 20px 0 0 20px; border: 1px solid #ccc;">
+        <button type="submit" style="padding: 8px 15px; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; border: none;">
+            🔍
+        </button>
+    </form>
+</div>
+
+
+
+    <div class="topbar">
+        <h1>Welcome {{ session.get('username', 'Guest') }}</h1>
+        
+        <div class="account-links">
+            {% if session.get('username') %}
+                <a href="{{ url_for('account') }}">👤 My Account</a> 
+                
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a> |
+                <a href="{{ url_for('signup') }}">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{ url_for('add_story') }}">
+        <button>📜Add a New Story</button>
+    </a>
+
+    <h2>All Stories</h2>
+
+    
+   {% if stories %}
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        {% for story in stories %}
+            <div class="story-card" style="width: 200px;">
+                <a href="{{ url_for('story_detail', story_id=story['id']) }}">
+                    {% set cover = story['cover_image'] if story['cover_image'] else 'default.jpg' %}
+                    <img src="{{ url_for('static', filename='covers/' ~ cover) }}" width="200" height="250">
+                </a>
+
+                <div class="story-details">
+                    <h3>{{ story['title'] }}</h3>
+                    <p><strong>Status:</strong> {{ story['status'] }}</p>
+                    <p><strong>Reads:</strong> {{ story['reads'] }}</p>
+
+                    <!-- Like Button -->
+                    <form action="{{ url_for('like_story', story_id=story['id']) }}" method="POST" style="display:inline;">
+    <button type="submit" {% if already_liked %}disabled{% endif %} style="background: none; border: none; cursor: pointer;">
+        👍
+    </button>
+    {{ story['likes'] }}
+</form>
+
+                    <p>{{ story['description'][:100] }}...</p>
+
+                    {% if session['user_id'] == story['author'] %}
+                        <form action="{{ url_for('delete_story', story_id=story['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this story?');">
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No stories yet. Be the first to add one!</p>
+{% endif %}
+
+
+
+
+
+
+
+
+</body>
+</html>

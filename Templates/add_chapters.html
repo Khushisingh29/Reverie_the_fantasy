@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Chapter</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: sans-serif;
+            padding: 30px;
+        }
+        input, textarea, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 6px;
+        }
+        button {
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Chapter to "{{ story_title }}"</h1>
+
+    <form method="POST">
+        <label for="title">Chapter Title</label>
+        <input type="text" name="title" id="title" required>
+
+        <label for="content">Chapter Content</label>
+        <textarea name="content" id="content" rows="10" required></textarea>
+
+        <button type="submit">Upload Chapter</button>
+    </form>
+
+    <a href="{{ url_for('view_story', story_id=story_id) }}">← Back to Story</a>
+</body>
+</html>

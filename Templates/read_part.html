@@ -1,0 +1,52 @@
+<!-- templates/read_chapter.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ story.title }} - Part {{ part.part }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="{{ url_for('story_detail', story_id=story.id) }}">← Back to Story</a>
+
+    <div class="chapter-content">
+        <h1>{{ story.title }}</h1>
+        <h2>Part {{ part.part }}: {{ part.title }}</h2>
+        <p><em>By {{ story.author }} | Views: {{ story.reads }}</em></p>
+
+        <hr>
+        <div class="chapter-text">
+            <p>{{ part.content | safe }}</p> <!-- Use |safe if content has line breaks or HTML formatting -->
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="comments-section">
+        <h3>Leave a Comment</h3>
+        <form method="POST" action="{{ url_for('comment', story_id=story.id, part=part.part) }}">
+            <textarea name="comment" rows="4" cols="50" placeholder="Write your comment here..." required></textarea><br>
+            <button type="submit">Post Comment</button>
+        </form>
+
+        <h3>Comments</h3>
+        {% if comments %}
+            <ul>
+                {% for comment in comments %}
+                    <li><strong>{{ comment.username }}</strong>: {{ comment.text }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+    </div>
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+</body>
+</html>

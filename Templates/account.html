@@ -1,0 +1,63 @@
+<!-- templates/account.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, {{ user['username'] }}!</h2>
+
+        <div class="profile-card">
+            <p><strong>Username:</strong> {{ user['username'] }}</p>
+
+            <p><strong>User ID:</strong> {{ user['id'] }}</p>
+<div>
+{% if session.get('is_admin') %}
+    <a href="{{ url_for('admin_panel') }}" 
+       style="color: #d4af37; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 10px;">
+        🛕 Admin Panel
+    </a><br><br>
+
+{% endif %}
+</div>
+
+
+<div>
+<a href="{{ url_for('view_history') }}">📚 My Reading History</a><br><br>
+</div>
+
+<a href="{{ url_for('home') }}">🏠 Back to Home</a><br><br>
+
+            
+        </div>
+<a href="{{ url_for('logout') }}">🚪 Logout</a>
+
+
+    </div>
+
+
+
+<form method="POST" action="{{ url_for('set_theme') }}">
+  <label>Select Theme:</label><br>
+  <select name="theme">
+    <option value="dark" {% if session.get('theme') == 'dark' %}selected{% endif %}>Dark</option>
+    <option value="light" {% if session.get('theme') == 'light' %}selected{% endif %}>Light</option>
+  </select>
+  <button type="submit">Apply</button>
+</form>
+
+{% extends "base.html" %}
+{% block title %}Page Name{% endblock %}
+{% block content %}
+    <!-- Page-specific content -->
+{% endblock %}
+
+
+</body>
+</html>

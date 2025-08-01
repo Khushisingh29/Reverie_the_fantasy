@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ story['title'] }} - Part {{ part }}</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        input, textarea {
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid #444;
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ story['title'] }} - Part {{ part }}</h1>
+
+    <div>
+        {{ chapter['content'] | safe }}
+    </div>
+
+    <h2>Comments</h2>
+    <ul>
+        {% for comment in comments %}
+            <li><strong>{{ comment['username'] }}:</strong> {{ comment['comment'] }}</li>
+        {% endfor %}
+    </ul>
+
+    <form action="{{ url_for('comment', story_id=story['id'], part=part) }}" method="post">
+        <input type="text" name="username" placeholder="Your name" required><br>
+        <textarea name="comment" placeholder="Add your comment" required></textarea><br>
+        <button type="submit">Post Comment</button>
+    </form>
+</body>
+</html>
