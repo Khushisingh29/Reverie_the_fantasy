@@ -8,5 +8,8 @@
 </head>
 <body class="{{ session.get('theme', 'light') }}">
     {% block content %}{% endblock %}
+
+<li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+
 </body>
 </html>
