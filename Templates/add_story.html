@@ -4,41 +4,104 @@
 {% block title %}Add Story{% endblock %}
 
 {% block content %}
-<h1>Add Your Story</h1>
 
-<form action="{{ url_for('submit_story') }}" method="POST" enctype="multipart/form-data" style="max-width: 600px; display: flex; flex-direction: column; gap: 15px;">
+<style>
+  .form-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+  }
 
-    <!-- Story Title -->
-    <label for="title">Title:</label>
-    <input type="text" name="title" id="title" required>
+ {
+    width: 100%;
+    height: 300px;
+    padding: 15px;
+    font-size: 16px;
+    line-height: 1.6;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: vertical;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease-in-out;
+    z-index: 1;
+    background: #fff;
+}
 
-    <!-- Description -->
-    <label for="description">Short Description:</label>
-    <textarea name="description" id="description" rows="4" required></textarea>
 
-    <!-- Status -->
-    <label for="status">Status:</label>
-    <select name="status" id="status" required>
-        <option value="Ongoing">Ongoing</option>
-        <option value="Completed">Completed</option>
-    </select>
 
-    <!-- Cover Image -->
-    <label for="cover_image">Cover Image:</label>
-    <input type="file" name="cover_image" id="cover_image" accept="image/*" required>
+  .form-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-    <hr>
 
-    <h3>First Chapter</h3>
+  .form-wrapper form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+  }
 
-    <!-- Chapter Title -->
-    <label for="chapter_title">Chapter Title:</label>
-    <input type="text" name="chapter_title" id="chapter_title" required>
+  button[type="submit"] {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
 
-    <!-- Chapter Content -->
-    <label for="chapter_content">Chapter Content:</label>
-    <textarea name="chapter_content" id="chapter_content" rows="30" cols="30" required></textarea>
+  button[type="submit"]:hover {
+      background-color: #45a049;
+  }
+</style>
 
-    <button type="submit">📜 Add Story</button>
-</form>
+<div class="form-wrapper">
+  <h1>Add Your Story</h1>
+
+  <form action="{{ url_for('submit_story') }}" method="POST" enctype="multipart/form-data">
+      <!-- Story Title -->
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" required>
+
+      <!-- Description -->
+      <label for="description">Short Description:</label>
+      <textarea name="description" id="description" rows="4" required></textarea>
+
+      <!-- Status -->
+      <label for="status">Status:</label>
+      <select name="status" id="status" required>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+      </select>
+
+      <!-- Cover Image -->
+      <label for="cover_image">Cover Image:</label>
+      <input type="file" name="cover_image" id="cover_image" accept="image/*" required>
+
+      <hr>
+
+      <h3>First Chapter</h3>
+
+      <!-- Chapter Title -->
+      <label for="chapter_title">Chapter Title:</label>
+      <input type="text" name="chapter_title" id="chapter_title" required>
+
+
+      <!-- Chapter Content -->
+      <label for="chapter_content">Chapter Content:</label>
+      <textarea name="chapter_content" id="chapter_content"  required></textarea>
+
+      <button type="submit">📜 Add Story</button>
+  </form>
+</div>
+
 {% endblock %}
+
+
