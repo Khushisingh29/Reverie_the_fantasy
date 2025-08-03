@@ -15,6 +15,14 @@ conn.row_factory = sqlite3.Row  # ✅ ADD THIS LINE HERE
 cur = conn.cursor()
 
 
+import os
+import jinja2
+
+template_loader = jinja2.FileSystemLoader(searchpath=os.path.join(os.path.dirname(__file__), 'templates'))
+app.jinja_loader = template_loader
+
+
+
 UPLOAD_FOLDER = 'static/covers'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -318,7 +326,12 @@ def login():
                 flash('Invalid username or password', 'error')
                 return redirect(url_for('login'))
 
-    return render_template('login.html')
+    
+    print("Current working directory:", os.getcwd())
+    print("Looking for template at:", os.path.join(os.getcwd(), 'templates', 'login.html'))
+    return render_template("login.html")
+ 
+    
 
 
 @app.route('/logout')
