@@ -5,19 +5,34 @@
 </head>
 <body>
     <h2>Login</h2>
+
+    <!-- ✅ Show success message if redirected from signup -->
+    {% if success %}
+        <p style="color: green;">Account created successfully! Please log in below.</p>
+    {% endif %}
+
+    <!-- ✅ Show error flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <form method="POST" action="{{ url_for('login') }}">
-  <label for="username">Username:</label>
-  <input type="text" name="username" required><br>
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br><br>
 
-  
-  <label for="password">Password:</label>
-  <input type="password" name="password" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br><br>
 
-  <input type="submit" value="Login">
-</form>
+        <input type="submit" value="Login"><br><br>
+    </form>
 
-<p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
-
-
+    <!-- ✅ Optional: hide signup link if just signed up -->
+    {% if not success %}
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
+    {% endif %}
 </body>
 </html>

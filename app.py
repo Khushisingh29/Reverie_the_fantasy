@@ -76,7 +76,7 @@ init_db()
 
 @app.before_request
 def load_current_user():
-    g.user = session.get('user')
+    g.user = session.get('username')
 
 
 import sqlite3
@@ -148,7 +148,7 @@ def signup():
                             (username, password, email))
                 conn.commit()
                 flash('Account created successfully. Please log in.')
-                return redirect(url_for('login'))
+                return redirect(url_for('home'))
             except sqlite3.IntegrityError:
                 flash('⚠️ Username already exists. Please choose another one.', 'error')
                 return redirect(url_for('signup'))
@@ -303,6 +303,8 @@ def submit_story():
 
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from werkzeug.security import check_password_hash
+import sqlite3
+import os
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -326,10 +328,9 @@ def login():
                 flash('Invalid username or password', 'error')
                 return redirect(url_for('login'))
 
-    
-    print("Current working directory:", os.getcwd())
-    print("Looking for template at:", os.path.join(os.getcwd(), 'templates', 'login.html'))
-    return render_template("login.html")
+    # 👉 Handle success message from signup redirect
+    success = request.args.get('success')
+    return render_template("login.html", success=success)
  
     
 
