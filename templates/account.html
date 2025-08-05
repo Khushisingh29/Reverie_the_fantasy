@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>My Account</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    
+ <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 <body>
@@ -41,6 +42,14 @@
 
     </div>
 
+<form method="POST" action="{{ url_for('set_theme') }}">
+  <label>Select Theme:</label><br>
+  <select name="theme">
+    <option value="dark" {% if session.get('theme') == 'dark' %}selected{% endif %}>Dark</option>
+    <option value="light" {% if session.get('theme') == 'light' %}selected{% endif %}>Light</option>
+  </select>
+  <button type="submit">Apply</button>
+</form>
 
 
 

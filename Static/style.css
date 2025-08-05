@@ -121,3 +121,34 @@ textarea {
   }
 }
 
+/* Input and Textarea Styling */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 12px;
+  border: 2px solid var(--bg-card);
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  color: var(--text-main);
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(255, 182, 193, 0.5);
+}
+
+textarea {
+  min-height: 150px;
+}
+

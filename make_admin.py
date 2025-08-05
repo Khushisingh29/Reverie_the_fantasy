@@ -1,15 +1,18 @@
-import sqlite3
+from your_flask_app import app, db  # Import your Flask app and SQLAlchemy db
+from sqlalchemy import inspect, text
 
-# Connect to your database
-conn = sqlite3.connect('stories.db')  # or your actual DB name
-cursor = conn.cursor()
+def add_is_admin_column():
+    with app.app_context():
+        inspector = inspect(db.engine)
+        columns = [col['name'] for col in inspector.get_columns('users')]
 
-# Add 'is_admin' column to the users table (only if not already added)
-try:
-    cursor.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0")
-    print("Column 'is_admin' added.")
-except:
-    print("Column 'is_admin' already exists or error occurred.")
+        if 'is_admin' not in columns:
+            with db.engine.connect() as conn:
+                conn.execute(text("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"))
+                print("✅ Column 'is_admin' added.")
+        else:
+            print("ℹ️ Column 'is_admin' already exists.")
 
-conn.commit()
-conn.close()
+if __name__ == '__main__':
+    add_is_admin_column()
+

@@ -1,25 +1,33 @@
 import os
-import sqlite3
+from werkzeug.security import generate_password_hash
+from your_flask_app import app, db  # Import your Flask app and db instance
+from models import User  # Your User model with SQLAlchemy
 
-username = os.getenv("ADMIN_USERNAME")
-password = os.getenv("ADMIN_PASSWORD")
-is_admin = 1
+def create_admin_user():
+    with app.app_context():
+        username = os.getenv("ADMIN_USERNAME")
+        password = os.getenv("ADMIN_PASSWORD")
+        is_admin = True
 
-if not username or not password:
-    raise ValueError("❌ ADMIN_USERNAME and ADMIN_PASSWORD must be set as environment variables.")
+        if not username or not password:
+            raise ValueError("❌ ADMIN_USERNAME and ADMIN_PASSWORD must be set as environment variables.")
 
-with sqlite3.connect("stories.db") as conn:
-    cur = conn.cursor()
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            print(f"❌ Username '{username}' already exists. Choose a different one.")
+            return
 
-    cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    existing_user = cur.fetchone()
+        hashed_password = generate_password_hash(password)
 
-    if existing_user:
-        print(f"❌ Username '{username}' already exists. Choose a different one.")
-    else:
-        cur.execute('''
-            INSERT INTO users (username, password, is_admin)
-            VALUES (?, ?, ?)
-        ''', (username, password, is_admin))
-        conn.commit()
+        new_admin = User(
+            username=username,
+            password=hashed_password,
+            is_admin=is_admin
+        )
+
+        db.session.add(new_admin)
+        db.session.commit()
         print("✅ Admin user created successfully.")
+
+if __name__ == '__main__':
+    create_admin_user()
