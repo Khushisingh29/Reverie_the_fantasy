@@ -74,8 +74,11 @@ from sqlalchemy import inspect, Column, Integer
 
 def add_is_admin_column():
     inspector = inspect(db.engine)
-    columns = [col["name"] for col in inspector.get_columns("users")]
+    if not inspector.has_table("users"):
+        print("⚠️ 'users' table does not exist yet. Skipping column check.")
+        return
 
+    columns = [col["name"] for col in inspector.get_columns("users")]
     if "is_admin" not in columns:
         with db.engine.connect() as conn:
             conn.execute('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0')
@@ -83,8 +86,6 @@ def add_is_admin_column():
     else:
         print("ℹ️ 'is_admin' column already exists.")
 
-with app.app_context():
-    add_is_admin_column()
 
 
 @app.route('/insert_dummy')
