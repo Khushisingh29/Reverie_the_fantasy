@@ -901,6 +901,8 @@ def create_tables():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # This will create the 'users' and other tables
+        db.create_all()
+        users = User.query.with_entities(User.username).all()
+        print(users)
 
     app.run(debug=True)
