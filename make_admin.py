@@ -1,4 +1,4 @@
-from your_flask_app import app, db  # Import your Flask app and SQLAlchemy db
+from app import app, db
 from sqlalchemy import inspect, text
 
 def add_is_admin_column():

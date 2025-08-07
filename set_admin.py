@@ -1,5 +1,5 @@
-from your_flask_app import app, db
-from models import User
+from app import app, db  # ✅ 'app' is the name of the Python file, not the variable
+from app import User
 
 def mark_user_as_admin(username):
     with app.app_context():

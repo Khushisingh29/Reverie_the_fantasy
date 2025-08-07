@@ -42,15 +42,6 @@
 
     </div>
 
-<form method="POST" action="{{ url_for('set_theme') }}">
-  <label>Select Theme:</label><br>
-  <select name="theme">
-    <option value="dark" {% if session.get('theme') == 'dark' %}selected{% endif %}>Dark</option>
-    <option value="light" {% if session.get('theme') == 'light' %}selected{% endif %}>Light</option>
-  </select>
-  <button type="submit">Apply</button>
-</form>
-
 
 
 {% extends "base.html" %}

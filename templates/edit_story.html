@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Story</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Story</h1>
+    <form method="POST">
+        <label>Title:</label>
+        <input type="text" name="title" value="{{ story.title }}" required>
+
+        <label>Description:</label>
+        <textarea name="description" rows="5">{{ story.description }}</textarea>
+
+        <label>Status:</label>
+        <select name="status">
+            <option value="Ongoing" {% if story.status == 'Ongoing' %}selected{% endif %}>Ongoing</option>
+            <option value="Completed" {% if story.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+
+        <button type="submit">💾 Save Changes</button>
+    </form>
+</body>
+</html>

@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>{{ story['title'] }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
             background-color: #121212;
             color: white;
             font-family: sans-serif;
             padding: 20px;
+            margin: 0;
         }
 
         a {
@@ -17,8 +21,14 @@
 
         img {
             margin-top: 10px;
-            max-width: 200px;
+            max-width: 100%;
+            height: auto;
             border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
         }
 
         .story-info {
@@ -38,6 +48,27 @@
             margin-bottom: 10px;
         }
 
+        .like-button {
+            margin-top: 10px;
+        }
+
+        .like-heart {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .like-heart:hover {
+            color: #ff69b4;
+        }
+
+        .like-heart.liked {
+            color: #ff69b4;
+        }
+
         .add-chapter {
             margin-top: 15px;
             display: inline-block;
@@ -45,13 +76,56 @@
             color: #1e90ff;
             text-decoration: none;
         }
-    </style>
-<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
 
+.home-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background-color: #1e90ff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+    background-color: #0066cc;
+}
+
+
+        /* ✅ Responsive layout */
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .like-heart {
+                font-size: 20px;
+            }
+
+            .add-chapter {
+                display: block;
+                margin-top: 20px;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
 </head>
 <body>
+
     <div class="story-info">
         <h1>{{ story['title'] }}</h1>
+<p><strong>Author:</strong> {{ story['author'] }}</p> | {% if username == story['author'] %}
+    <a href="{{ url_for('edit_story', story_id=story['id']) }}" class="edit-button">✏️ Edit Story</a>
+{% endif %}
+
+
 
         {% if story['cover_image'] %}
             <img src="{{ url_for('static', filename='covers/' ~ story['cover_image']) }}" alt="Cover Image">
@@ -59,9 +133,19 @@
 
         <p><strong>Status:</strong> {{ story['status'] }}</p>
         <p><strong>Description:</strong> {{ story['description'] }}</p>
-        <p><strong>Views:</strong> {{ story['reads'] }}
+        <p><strong>Views:</strong> {{ story['reads'] }}</p>
 
+        <p><strong>Likes:</strong> {{ total_likes }}</p>
 
+        {% if username %}
+            <form action="{{ url_for('like_story', story_id=story['id']) }}" method="POST" class="like-button">
+                <button type="submit" class="like-heart {% if liked %}liked{% endif %}" title="Like this story">
+                    ❤️
+                </button>
+            </form>
+        {% else %}
+            <p><a href="{{ url_for('login') }}">Login</a> to like this story.</p>
+        {% endif %}
     </div>
 
     <div class="chapter-list">
@@ -82,30 +166,11 @@
         {% endif %}
 
         {% if username == story['author'] %}
-            <a href="{{ url_for('add_chapter', story_id=story['id']) }}">Add Chapter</a>
+            <a href="{{ url_for('add_chapter', story_id=story['id']) }}" class="add-chapter">➕ Add Chapter</a>
         {% endif %}
     </div>
-
-{% extends "base.html" %}
-{% block title %}Page Name{% endblock %}
-{% block content %}
-    <!-- Page-specific content -->
-{% endblock %}
-
-
-{% if chapters %}
-    {% for chapter in chapters %}
-        <h3>{{ chapter['title'] }}</h3>
-        <p>{{ chapter['content'] }}</p>
-
-        {% if chapter['audio_file'] %}
-            <audio controls>
-                <source src="{{ url_for('static', filename='audio/' ~ chapter['audio_file']) }}" type="audio/mpeg">
-                Your browser does not support the audio tag.
-            </audio>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+<a href="{{ url_for('home') }}" class="home-button">✨ Home</a>
+ 
 
 </body>
 </html>

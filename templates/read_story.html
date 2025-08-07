@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ story['title'] }} - Part {{ part }}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
-
+    <title>{{ story.title }} - Part {{ part }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
 
     <style>
         body {
@@ -21,41 +20,47 @@
         textarea {
             width: 100%;
             height: 100px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0f78d0;
         }
     </style>
 </head>
 <body>
-    <h1>{{ story['title'] }}</h1>
-    <h2>Part {{ part }}: {{ chapter['title'] }}</h2>
+
+    <h1>{{ story.title }}</h1>
+    <h2>Part {{ part }}: {{ chapter.title }}</h2>
 
     <div class="chapter">
-        <p>{{ chapter['content'] }}</p>
-    </div>
-
-    <hr>
+        <p>{{ chapter.content }}</p>
+    </div> <!-- ✅ Properly closed -->
 
     <div class="comments">
         <h3>Comments</h3>
         <ul>
             {% for comment in comments %}
-                <li><strong>{{ comment['username'] }}:</strong> {{ comment['text'] }}</li>
+                <li><strong>{{ comment.username or "Anonymous" }}:</strong> {{ comment.comment }}</li>
             {% else %}
                 <li>No comments yet.</li>
             {% endfor %}
         </ul>
 
-        <form method="POST" action="{{ url_for('add_comment', story_id=story['id'], part=part) }}">
+        <form method="POST" action="{{ url_for('add_comment', story_id=story.id) }}">
             <label for="comment">Add a Comment:</label><br>
-            <textarea name="text" required></textarea><br>
+            <textarea id="comment" name="comment" required></textarea><br>
             <button type="submit">Submit</button>
         </form>
     </div>
-
-{% extends "base.html" %}
-{% block title %}Page Name{% endblock %}
-{% block content %}
-    <!-- Page-specific content -->
-{% endblock %}
 
 </body>
 </html>

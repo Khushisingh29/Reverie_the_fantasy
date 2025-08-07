@@ -1,7 +1,7 @@
 import os
 from werkzeug.security import generate_password_hash
-from your_flask_app import app, db  # Import your Flask app and db instance
-from models import User  # Your User model with SQLAlchemy
+from app import app, db            # ✅ Replace 'app' with the actual file name
+from app import User
 
 def create_admin_user():
     with app.app_context():
