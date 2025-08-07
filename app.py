@@ -17,6 +17,8 @@ app.secret_key = os.environ.get('SECRET_KEY', 'devfallbacksecret')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+print("🔧 All ENV Vars =", dict(os.environ))
+
 # ✅ Debug print
 print("🔍 DATABASE_URL =", app.config['SQLALCHEMY_DATABASE_URI'])
 
@@ -827,10 +829,8 @@ class History(Base):
 
     __table_args__ = (UniqueConstraint('user_id', 'story_id', name='unique_history'),)
 
-from your_app import Base, engine
 from models import Like, History
 
-Base.metadata.create_all(engine)
 
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
@@ -902,13 +902,14 @@ def chapter_audio(chapter_id):
         return send_file(audio_path, mimetype='audio/mpeg')
     return "Audio not available", 404
 
+@app.route('/create-tables')
+def create_tables():
+    db.create_all()
+    return "✅ Tables created successfully!"
+
 
 if __name__ == '__main__':
-    from models import Base, engine
+    with app.app_context():
+        db.create_all()  # This will create the 'users' and other tables
 
-    # Create tables if they don't exist yet
-    Base.metadata.create_all(engine)
-
-    # Start the Flask development server
     app.run(debug=True)
-
