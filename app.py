@@ -223,7 +223,6 @@ add_audio_column_sqlalchemy()
 from werkzeug.utils import secure_filename
 from flask import request, session, redirect, url_for
 from sqlalchemy.orm import Session
-from models import db, Story, Chapter  # You need to define these SQLAlchemy models
 import os
 import asyncio
 import edge_tts
@@ -309,7 +308,6 @@ def submit_story():
 
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from werkzeug.security import check_password_hash
-from models import db, User  # 🔁 make sure your models file is set up correctly
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -335,7 +333,6 @@ def login():
     
 
 from flask import session, redirect, url_for, flash, render_template
-from models import User  # assuming you've already set up your models properly
 
 @app.route('/logout')
 def logout():
@@ -583,7 +580,6 @@ class Chapter(db.Model):
 
 
 from flask import request, session, redirect, url_for, render_template
-from models import db, Chapter, Story  # make sure you’ve imported your models
 
 @app.route('/add_chapter/<int:story_id>', methods=['GET', 'POST'])
 def add_chapter(story_id):
@@ -614,7 +610,6 @@ def add_chapter(story_id):
 
 
 from flask import session, redirect, url_for, render_template
-from models import db, User, Story  # Assuming your models are defined
 
 @app.route('/admin')
 def admin_panel():
@@ -629,7 +624,6 @@ def admin_panel():
 import os
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash
-from models import db, User
 
 load_dotenv()
 
@@ -652,8 +646,6 @@ else:
         print("✅ Admin user created securely.")
 
 
-
-from models import db, User
 
 print("📋 Existing usernames:")
 users = User.query.with_entities(User.username).all()
@@ -748,7 +740,6 @@ with engine.connect() as conn:
             print("❌ Error while adding 'views':", e)
 
 
-from models import Story, Like  # Assuming these are defined ORM models
 
 @app.route('/search')
 def search():
@@ -808,7 +799,9 @@ def like_story(story_id):
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from your_app import Base  # from your SQLAlchemy setup
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
+Base = db.Model
 
 class Like(Base):
     __tablename__ = 'likes'
@@ -830,12 +823,10 @@ class History(Base):
 
     __table_args__ = (UniqueConstraint('user_id', 'story_id', name='unique_history'),)
 
-from models import Like, History
 
 
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
-from models import History, Story
 
 @app.route('/history')
 def view_history():
@@ -875,7 +866,6 @@ def view_story(story_id):
         db.close()
 
 
-from models import History
 
 @app.route('/history/remove/<int:story_id>', methods=['POST'])
 def remove_from_history(story_id):
