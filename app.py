@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, g
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from sqlalchemy import inspect, Column, Integer, create_engine, text, desc
@@ -36,6 +38,7 @@ app.jinja_loader = template_loader
 # Models
 class Story(db.Model):
     __tablename__ = 'stories'
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     cover_image = db.Column(db.String(255))
@@ -45,6 +48,22 @@ class Story(db.Model):
     parts = db.Column(db.Integer, default=1)
     status = db.Column(db.String(50), default='Ongoing')
     author = db.Column(db.String(150))
+
+    # ✅ Relationship to chapters with cascade
+    chapters = db.relationship(
+        'Chapter',
+        backref='story',
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
+
+    # ✅ Relationship to comments with cascade (MUST HAVE THIS)
+    comments = db.relationship(
+        'Comment',
+        backref='story',
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -56,8 +75,16 @@ class User(db.Model):
 
 class Comment(db.Model):
     __tablename__ = 'comments'
+
     id = db.Column(db.Integer, primary_key=True)
-    story_id = db.Column(db.Integer, db.ForeignKey('stories.id'), nullable=False)
+
+    # Add ondelete='CASCADE' to allow story deletion
+    story_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stories.id', ondelete='CASCADE'),
+        nullable=False
+    )
+
     part = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(150))
     comment = db.Column(db.Text)
@@ -66,15 +93,22 @@ class Comment(db.Model):
 
 class Chapter(db.Model):
     __tablename__ = 'chapters'
+
     id = db.Column(db.Integer, primary_key=True)
-    story_id = db.Column(db.Integer, db.ForeignKey('stories.id'), nullable=False)
+    story_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stories.id', ondelete='CASCADE'),
+        nullable=False
+    )
     author_name = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     audio_file = db.Column(db.String(255))
     views = db.Column(db.Integer, default=0)
-    story = db.relationship('Story', backref='chapters')
+
+    # ❌ Remove this line (no relationship in Chapter):
+    # story = db.relationship(...)
 
 class Like(db.Model):
     __tablename__ = 'likes'
@@ -716,6 +750,7 @@ def account():
         return redirect(url_for('login'))
     user = User.query.filter_by(username=session['username']).first()
     return render_template('account.html', user=user)
+
 
 
 if __name__ == '__main__':
