@@ -542,25 +542,31 @@ def add_chapter(story_id):
     return render_template('add_chapter.html', story_id=story_id, story_title=story.title)
 
 
-# Route: edit story
-@app.route('/story/<int:story_id>/edit', methods=['GET', 'POST'])
+@app.route('/edit_story/<int:story_id>', methods=['GET', 'POST'])
 def edit_story(story_id):
     story = Story.query.get_or_404(story_id)
-
-    # ✅ Check if logged in
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    # ✅ Only allow author to edit
-    if session['username'] != story.author:
-        return "❌ Unauthorized", 403
 
     if request.method == 'POST':
         story.title = request.form['title']
         story.description = request.form['description']
         story.status = request.form['status']
+
+        file = request.files.get('cover_image')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            ext = filename.rsplit('.', 1)[1].lower()
+            filename = f"{uuid.uuid4().hex}.{ext}"
+
+            upload_folder = os.path.join(app.root_path, 'static', 'covers')
+            os.makedirs(upload_folder, exist_ok=True)
+
+            file.save(os.path.join(upload_folder, filename))
+
+            # Update cover image filename in story
+            story.cover_image = filename
+
         db.session.commit()
-        return redirect(url_for('story_detail', story_id=story_id))
+        return redirect(url_for('story_detail', story_id=story.id))
 
     return render_template('edit_story.html', story=story)
 

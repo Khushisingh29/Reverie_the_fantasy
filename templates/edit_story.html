@@ -34,21 +34,23 @@
     </style>
 </head>
 <body>
-    <h1>Edit Story</h1>
-    <form method="POST">
-        <label>Title:</label>
-        <input type="text" name="title" value="{{ story.title }}" required>
+<form method="POST" enctype="multipart/form-data">
+    <label>Title:</label>
+    <input type="text" name="title" value="{{ story.title }}" required>
 
-        <label>Description:</label>
-        <textarea name="description" rows="5">{{ story.description }}</textarea>
+    <label>Description:</label>
+    <textarea name="description" rows="5">{{ story.description }}</textarea>
 
-        <label>Status:</label>
-        <select name="status">
-            <option value="Ongoing" {% if story.status == 'Ongoing' %}selected{% endif %}>Ongoing</option>
-            <option value="Completed" {% if story.status == 'Completed' %}selected{% endif %}>Completed</option>
-        </select>
+    <label>Status:</label>
+    <select name="status">
+        <option value="Ongoing" {% if story.status == 'Ongoing' %}selected{% endif %}>Ongoing</option>
+        <option value="Completed" {% if story.status == 'Completed' %}selected{% endif %}>Completed</option>
+    </select>
 
-        <button type="submit">💾 Save Changes</button>
-    </form>
+    <label>Change Cover Image (optional):</label>
+    <input type="file" name="cover_image" accept="image/*">
+
+    <button type="submit">💾 Save Changes</button>
+</form>
 </body>
 </html>
