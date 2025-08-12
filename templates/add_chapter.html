@@ -2,36 +2,28 @@
 <html>
 <head>
     <title>Add Chapter</title>
-<link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename=(session.get('theme', 'dark') + '.css')) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Add Chapter to "{{ story_title }}"</h1><br><br>
 
     <form method="POST">
-        <label for="title">Chapter Title</label><br><br>
+        <label for="chapter_title">Chapter Title</label><br><br>
+        <input type="text" name="chapter_title" id="chapter_title" required><br><br>
 
-        <input type="text" name="title" id="title" required><br><br>
-
-
-        <label for="content">Chapter Content</label><br><br>
-
-        <textarea name="content" id="content" rows="10" required></textarea><br><br>
-
+        <label for="chapter_content">Chapter Content</label><br><br>
+        <textarea name="chapter_content" id="chapter_content" rows="10" required></textarea><br><br>
 
         <button type="submit">Upload Chapter</button><br><br>
-
     </form>
 
     <a href="{{ url_for('story_detail', story_id=story_id) }}">← Back to Story</a><br><br>
 
-
-{% extends "base.html" %}
-{% block title %}Page Name{% endblock %}
-{% block content %}
-    <!-- Page-specific content -->
-{% endblock %}
-
+    {% extends "base.html" %}
+    {% block title %}Add Chapter{% endblock %}
+    {% block content %}
+        <!-- Page-specific content -->
+    {% endblock %}
 </body>
 </html>

@@ -518,6 +518,9 @@ def add_chapter(story_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
+    # Get the story so we can pass its title to the template
+    story = Story.query.get_or_404(story_id)
+
     if request.method == 'POST':
         chapter_title = request.form['chapter_title']
         chapter_content = request.form['chapter_content']
@@ -533,7 +536,7 @@ def add_chapter(story_id):
 
         return redirect(url_for('story_detail', story_id=story_id))
 
-    return render_template('add_chapter.html', story_id=story_id)
+    return render_template('add_chapter.html', story_id=story_id, story_title=story.title)
 
 
 # Route: edit story
