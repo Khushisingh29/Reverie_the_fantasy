@@ -270,7 +270,7 @@ def add_story():
 
     return render_template('add_story.html')
 
-# Route: submit story with audio
+
 @app.route('/submit', methods=['POST'])
 def submit_story():
     if 'username' not in session:
@@ -284,19 +284,22 @@ def submit_story():
     file = request.files.get('cover_image')
     cover_image_filename = ''
 
+    upload_folder = os.path.join(app.root_path, 'static', 'covers')
+    os.makedirs(upload_folder, exist_ok=True)
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-
-        if os.path.exists(filepath):
+        # Rename if file exists to avoid overwriting
+        if os.path.exists(os.path.join(upload_folder, filename)):
             ext = filename.rsplit('.', 1)[1].lower()
             filename = f"{uuid.uuid4().hex}.{ext}"
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-
-        file.save(filepath)
+        file.save(os.path.join(upload_folder, filename))
         cover_image_filename = filename
     elif file:
         return "Invalid file type. Allowed: png, jpg, jpeg, gif, webp", 400
+
+    
+    
 
     try:
         story = Story(
