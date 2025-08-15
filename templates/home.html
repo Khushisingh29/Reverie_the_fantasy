@@ -43,7 +43,7 @@
         <div class="story-card">
             <a href="{{ url_for('story_detail', story_id=story['id']) }}">
                 {% set cover_path = 'covers/' ~ story['cover_image'] if story['cover_image'] else 'covers/default.jpg' %}
-<img src="{{ url_for('static', filename=cover_path) }}" width="200" height="250">
+<img src="{{ url_for('static', filename=cover_path) }}" 
 
 
             </a>

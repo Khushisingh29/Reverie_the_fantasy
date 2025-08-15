@@ -18,10 +18,12 @@
         <p><em>By {{ story.author }} 
 
         <hr>
-        <div class="chapter-text">
-            <p>{{ chapter.content | safe }}</p>
-        </div>
-    </div>
+<div class="chapter-text">
+    <pre style="white-space: pre-wrap; font-family: inherit; font-size: 1rem; line-height: 1.5;">
+{{ chapter.content }}
+    </pre>
+</div>
+
 
     <hr>
 
